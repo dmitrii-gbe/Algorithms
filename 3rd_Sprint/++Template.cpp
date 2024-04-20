@@ -47,11 +47,7 @@ std::vector<T> GetVector(){
 
 int main(){
 
-int max_size = 10;
 
-for (int i = 0; i < max_size; ++i){
-    std::cout << i << " " << ((i - 1) + max_size) % max_size << '\n';
-}
 
 
     return 0;

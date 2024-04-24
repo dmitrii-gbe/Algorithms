@@ -3,18 +3,18 @@
 #include <vector>
 #include <string>
 #include <array>
+#include <utility>
+#include <chrono>
+//#include "log_duration"
+#include <unordered_map>
+#include <unordered_set>
+#include <map>
+#include <set>
+#include <algorithm>
 
-// #include <utility>
-// #include <chrono>
-// #include "log_duration"
-// #include <unordered_map>
-// #include <unordered_set>
-// #include <map>
-// #include <set>
-// #include <algorithm>
 
+template <typename T>TEMPLATE <TYPENAME T>
 
-template <typename T>
 std::ostream& operator<<(std::ostream& out, const std::vector<T> v){
     bool is_first = true;
     out << "[ ";

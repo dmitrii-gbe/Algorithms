@@ -1,3 +1,4 @@
+//https://contest.yandex.ru/contest/23815/run-report/112435977/
 //#include "solution.h"
 #include <vector>
 #include <iostream>

@@ -1,4 +1,4 @@
-//https://contest.yandex.ru/contest/23815/run-report/113184605/
+//https://contest.yandex.ru/contest/23815/run-report/113285995/
 /*
 -- ПРИНЦИП РАБОТЫ --
 Решение принимает входные данные с помощью фукнции GetInputData и конcтруирует из них std::vector<Participant>.
@@ -27,7 +27,9 @@
 -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
 Функция QuickSortInPlace вызывается и переупорядочивает N элементов, где N - длина исходного массива, столько раз,
 сколько раз его требуется поделить, чтобы получить массивы, длиной не превосходящие 1.  Таким образом, сложность
-быстрой сортировки составит O(Nlog(N)).
+быстрой сортировки составит O(Nlog(N)). //Не очень понятно замечание относительно размера динамических объектов. Интересно еще,
+почему эта сортировка оказывается медленнее std::sort(). На векторах целых чисел разница получается примерно в 7 раз безотносительно 
+размера массива. Вроде std::sort использует тот же алгоритм.
 
 -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
 Каждый последовательный рекурсивный вызов QuickSortInPlace требует память только, чтобы хранить пару итераторов
@@ -40,7 +42,7 @@
 #include <tuple>
 
 size_t GetRandomIndex(size_t upper_limit){
-    return size_t((std::rand() / (RAND_MAX * 1.0)) * upper_limit);
+    return std::rand() % (upper_limit + 1);
 }
 
 
@@ -55,11 +57,15 @@ struct Participant {
     int64_t penalty_ = 0;
 
     bool operator==(const Participant& other) const {
-        return login_ == other.login_ && points_ == other.points_ && penalty_ == other.penalty_;
+        return this->Key() == other.Key();
     }
 
     bool operator!=(const Participant& other) const {
         return !(*this == other);
+    }
+
+    std::tuple<int64_t, int64_t, std::string> Key() const {
+        return std::tuple(-points_, penalty_, login_);
     }
 };
 
@@ -102,15 +108,8 @@ std::vector<Participant> GetInputData(){
 }
 
 template <typename It, typename Comparator>
-void QuickSortInPlace(It first, It last, Comparator comparator){
-    if (last - first < 2){
-        return;
-    }
-    else {
-        typename std::iterator_traits<It>::value_type pivot = *(first + std::min(GetRandomIndex(last - first), size_t(last - first - 1)));
-        It left = first;
-        It right = last - 1;
-        while (right > left){
+It GetBorder(It left, It right, typename std::iterator_traits<It>::value_type pivot, Comparator comparator){
+    while (right > left){
             if (!comparator(*left, pivot) && *left != pivot && (comparator(*right, pivot) || *right == pivot)){ 
                 std::swap(*left, *right);
                 ++left;
@@ -125,9 +124,23 @@ void QuickSortInPlace(It first, It last, Comparator comparator){
             if (!comparator(*right, pivot) && *right != pivot){ 
                 --right;
             }
-        }
-        QuickSortInPlace(first, comparator(*left, pivot) ? left + 1 : left, comparator);
-        QuickSortInPlace(comparator(*left, pivot) ? left + 1 : left, last, comparator);
+    }
+
+    return comparator(*left, pivot) ? left + 1 : left;
+}
+
+template <typename It, typename Comparator>
+void QuickSortInPlace(It first, It last, Comparator comparator){
+    if (last - first < 2){
+        return;
+    }
+    else {
+        typename std::iterator_traits<It>::value_type pivot = *(first + GetRandomIndex(last - first - 1));
+        It left = first;
+        It right = last - 1;
+        It border = GetBorder(left, right, pivot, comparator);
+        QuickSortInPlace(first, border, comparator);
+        QuickSortInPlace(border, last, comparator);
     }
 }
 
@@ -136,7 +149,7 @@ int main(){
     std::vector<Participant> input_data = GetInputData();
 
     QuickSortInPlace(input_data.begin(), input_data.end(), [](const Participant& left, const Participant& right)
-                                                            { return std::tuple(-left.points_, left.penalty_, left.login_) < std::tuple(-right.points_, right.penalty_, right.login_); });
+                                                            { return left.Key() < right.Key(); });
 
     std::cout << input_data;
     return 0;

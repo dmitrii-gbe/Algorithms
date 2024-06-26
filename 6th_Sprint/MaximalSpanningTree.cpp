@@ -1,4 +1,4 @@
-//https://contest.yandex.ru/contest/25070/run-report/115487911/
+//https://contest.yandex.ru/contest/25070/run-report/115508937/
 /*
 -- ПРИНЦИП РАБОТЫ --
 Решение принимает входные данные с помощью функции GetAdjacencyList(), которая возвращает список смежности графа.
@@ -30,6 +30,8 @@
 #include <algorithm>
 #include <unordered_set>
 #include <queue>
+#include <optional>
+#include <stack>
 
 struct Edge {
     Edge() = default;
@@ -65,19 +67,15 @@ void PushRangeToQueue(std::priority_queue<Edge, std::vector<Edge>, T>& queue, co
 }
 
 template <typename T>
-Edge ExtractMaxEdge(std::priority_queue<Edge, std::vector<Edge>, T>& queue,std::unordered_set<int>& visited){
-    Edge edge = queue.top();
-    queue.pop();
-    while(true){
+std::optional<Edge> ExtractMaxEdge(std::priority_queue<Edge, std::vector<Edge>, T>& queue,std::unordered_set<int>& visited){
+    while(!queue.empty()){
+        Edge edge = queue.top();
+        queue.pop();
         if (!visited.count(edge.to_)){
-            break;
-        }
-        else {
-            edge = queue.top();
-            queue.pop();
+            return edge;
         }
     }
-    return edge;
+    return std::nullopt;
 }
 
 long long int GetMaxSpanningTreeWeight(const std::vector<std::vector<Edge>>& list){
@@ -85,35 +83,34 @@ long long int GetMaxSpanningTreeWeight(const std::vector<std::vector<Edge>>& lis
 
     auto comparator = [](const Edge& lhs, const Edge& rhs){ return lhs.weight_ < rhs.weight_; };
     std::priority_queue<Edge, std::vector<Edge>, decltype(comparator)> queue;
-
-    std::unordered_set<int> unvisited;
     std::unordered_set<int> visited;
-
-    for (size_t i = 0; i < list.size(); ++i){
-        unvisited.insert(i);
-    }
 
     PushRangeToQueue(queue, list[0], visited);
     visited.insert(0);
-    unvisited.erase(0);
 
-    while (!queue.empty() && !unvisited.empty()){
-        Edge edge = ExtractMaxEdge(queue, visited);
-        sum_of_weights += edge.weight_;
-        PushRangeToQueue(queue, list[edge.to_], visited);
-        visited.insert(edge.to_);
-        unvisited.erase(edge.to_);
+    while (!queue.empty() && visited.size() != list.size()){
+        std::optional<Edge> edge = ExtractMaxEdge(queue, visited);
+        sum_of_weights += edge.value().weight_;
+        PushRangeToQueue(queue, list[edge.value().to_], visited);
+        visited.insert(edge.value().to_);
     }
-
     return sum_of_weights;
 }
 
-
-void RecursiveDFS(const int current_vertex, const std::vector<std::vector<Edge>>& list, std::vector<int>& colors, int color){
+void DFS(int current_vertex, const std::vector<std::vector<Edge>>& list, std::vector<int>& colors, int color){
     colors[current_vertex] = color;
-    for (const Edge& edge : list[current_vertex]) {
-        if (colors[edge.to_] == -1)
-            RecursiveDFS(edge.to_, list, colors, color);
+    std::stack<int> stack;
+    stack.push(current_vertex);
+
+    while (!stack.empty()){
+        int vertex = stack.top();
+        stack.pop();
+        for (const Edge& edge : list[vertex]) {
+            if (colors[edge.to_] == -1){
+                stack.push(edge.to_);
+                colors[edge.to_] = color;
+            }
+        }
     }
 }
 
@@ -122,7 +119,7 @@ bool CheckForConnectivity(const std::vector<std::vector<Edge>>& list){
     int color = 1;
     for (size_t vertex = 0; vertex < list.size(); ++vertex){
         if (colors[vertex] == -1 && vertex == 0){
-            RecursiveDFS(vertex, list, colors, color);
+            DFS(vertex, list, colors, color);
             ++color;
         }
         else if (vertex != 0 && colors[vertex] == -1){
@@ -145,7 +142,7 @@ int main(){
     }
 
     auto sum = GetMaxSpanningTreeWeight(graph);
-    std::cout << sum;
+    std::cout << sum << '\n';
 
     return 0;
 }

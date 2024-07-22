@@ -1,0 +1,12 @@
+---
+triple:          'x86_64-apple-darwin'
+binary-path:     '/Users/dmitrii/Documents/cpp-experiments/Algorhitms/5th_Sprint/Binaries/FindBrightestBulb'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: __Z8InternalPK4NodeRi, symObjAddr: 0x0, symBinAddr: 0x100003DA0, symSize: 0x70 }
+  - { offsetInCU: 0x2E60, offset: 0x2E60, size: 0x8, addend: 0x0, symName: __Z8InternalPK4NodeRi, symObjAddr: 0x0, symBinAddr: 0x100003DA0, symSize: 0x70 }
+  - { offsetInCU: 0x2E96, offset: 0x2E96, size: 0x8, addend: 0x0, symName: __Z8SolutionPK4Node, symObjAddr: 0x70, symBinAddr: 0x100003E10, symSize: 0x30 }
+  - { offsetInCU: 0x2ED0, offset: 0x2ED0, size: 0x8, addend: 0x0, symName: __Z4testv, symObjAddr: 0xA0, symBinAddr: 0x100003E40, symSize: 0xB0 }
+  - { offsetInCU: 0x2F82, offset: 0x2F82, size: 0x8, addend: 0x0, symName: __ZN4NodeC1EiPS_S0_, symObjAddr: 0x150, symBinAddr: 0x100003EF0, symSize: 0x40 }
+  - { offsetInCU: 0x2FD4, offset: 0x2FD4, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x190, symBinAddr: 0x100003F30, symSize: 0x10 }
+  - { offsetInCU: 0x2FED, offset: 0x2FED, size: 0x8, addend: 0x0, symName: __ZN4NodeC2EiPS_S0_, symObjAddr: 0x1A0, symBinAddr: 0x100003F40, symSize: 0x2E }
+...

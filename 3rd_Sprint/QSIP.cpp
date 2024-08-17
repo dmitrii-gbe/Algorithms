@@ -33,7 +33,7 @@ std::ostream& operator<<(std::ostream& out, const std::vector<T>& v){
 std::vector<int> GetRandomVector(size_t size){
     std::vector<int> result(size);
     for (size_t i = 0; i < size; ++i){
-        result[i] = rand() % 1000;
+        result[i] = rand() % 10;
     }
     return result;
 }
@@ -53,28 +53,24 @@ inline It GetBorder(It left, It right, typename std::iterator_traits<It>::value_
 
     bool left_less_pivot = false;
     bool right_less_pivot = false;
-    bool left_eq_pivot = false;
-    bool right_eq_pivot = false;
     --right;
-    //auto start = left;
-    //auto end = right;
-
+    // auto start = left;
+    // auto end = right;
+    //PrintRange(start, end);
     while (right > left){
-            //PrintRange(start, end);
-            left_less_pivot = comparator(*left, pivot);
-            right_less_pivot = comparator(*right, pivot);
-            left_eq_pivot = (*left == pivot);
-            right_eq_pivot = (*right == pivot);
+        
+        left_less_pivot = comparator(*left, pivot);
+        right_less_pivot = comparator(*right, pivot);
 
-            if (!left_less_pivot && !left_eq_pivot && (right_less_pivot || right_eq_pivot)){ 
-                std::swap(*left++, *right--);
-                continue;
-            }
-
-            left += (left_less_pivot || left_eq_pivot);
-            right -= (!right_less_pivot && !right_eq_pivot);
+        if (!left_less_pivot && right_less_pivot){ 
+            std::iter_swap(left++, right--);
+        }
+        else {
+            left += (left_less_pivot);
+            right -= (!right_less_pivot);
+        }
     }
-
+    //PrintRange(start, end);
     return comparator(*left, pivot) ? left + 1 : left;
 }
 
@@ -84,92 +80,38 @@ void QuickSortInPlace(It first, It last, Comparator comparator){
         return;
     }
     else {
-        //typename std::iterator_traits<It>::value_type pivot = *(first + std::rand() % (last - first));
-        typename std::iterator_traits<It>::value_type pivot = (*first + *(last - 1) + *(first + (last - first) / 2) ) / 3;
-        It left = first;
-        It right = last;
-        It border_right = GetBorder(left, right, pivot, comparator);
-        It border_left = GetBorder(left, border_right, pivot - 1, comparator);
+        typename std::iterator_traits<It>::value_type pivot = (*first + *(last - 1)) / 2;
+        It border_left = GetBorder(first, last, pivot, comparator);
+        It border_right = GetBorder(border_left, last, pivot, [comparator](const auto& lhs, const auto& rhs){ return !comparator(rhs, lhs); });
         QuickSortInPlace(first, border_left, comparator);
         QuickSortInPlace(border_right, last, comparator);
     }
 }
 
-/*
+int main(int argc, char** argv){
+    if (argc > 1){
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::vector<int> input_data = GetRandomVector(std::atoi(argv[1]));
+        std::shuffle(input_data.begin(), input_data.end(), g);
+        std::vector<int> input_data1 = input_data;
 
+        {
+            LOG_DURATION_STREAM("Mine", std::cout);
+            QuickSortInPlace(input_data.begin(), input_data.end(), std::less<int>());
+        }
 
-// template <typename It, typename Comparator>
-// It GetBorder(It first, It last, Comparator comparator){
-//     //PrintRange(first, last);
-//     auto pivot = (*first + *(last - 1)) / 2;
-//     // auto start = first;
-//     // auto end = last;
+        {
+            LOG_DURATION_STREAM("STL", std::cout);
+            std::sort(input_data1.begin(), input_data1.end(), std::less<int>());
+        }
 
-//     // --last;
+        assert(input_data == input_data1);
+        //std::cout << input_data << std::endl;
 
-//     // while (first < last){
-//     //     if (!comparator(*first, pivot) && comparator(*last, pivot)){
-//     //         std::swap(*first++, *last--);
-//     //         continue;
-//     //     }
-//     //     if (comparator(*first, pivot)){
-//     //         ++first;
-//     //     }
-//     //     if (comparator(pivot, *last) || pivot == *last){
-//     //         --last;
-//     //     }
-//     // }
-//     // auto border = std::find_if(start, end, [&pivot](auto item){ return item > pivot; });
-//     // return (border == end) ? end - 1 : border;
-
-
-//     first = std::find_if_not(first, last, [pivot, comparator](auto item){ return comparator(item, pivot); });
-//     if (first == last)
-//         return first;
- 
-//     for (auto i = std::next(first); i != last; ++i)
-//         if (comparator(*i, pivot)) {
-//             std::iter_swap(i, first);
-//             ++first;
-//         }
- 
-//     return first;
-
-// }
-
-// template <typename It, typename Comparator>
-// void QuickSortInPlace(It first, It last, Comparator comparator){
-//     if (last - first < 2){
-//         return;
-//     }
-//     else {
-//         It border = GetBorder(first, last, comparator);
-//         QuickSortInPlace(first, border, comparator);
-//         QuickSortInPlace(border + 1, last, comparator);
-//     }
-// }
-*/
-
-int main(){
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-
-    std::vector<int> input_data = GetRandomVector(120000000);
-    std::shuffle(input_data.begin(), input_data.end(), g);
-    std::vector<int> input_data1 = input_data;
-
-    {
-        LOG_DURATION_STREAM("Mine", std::cout);
-        QuickSortInPlace(input_data.begin(), input_data.end(), std::less<int>());
-    }
-
-    {
-        LOG_DURATION_STREAM("STL", std::cout);
-        std::sort(input_data1.begin(), input_data1.end(), std::less<int>());
-    }
-
-    assert(input_data == input_data1);
-    //std::cout << input_data << std::endl;
+    } 
+    else {
+       std::cout << "At least one parameter should be specified"s << std::endl;
+   }
     return 0;
 }

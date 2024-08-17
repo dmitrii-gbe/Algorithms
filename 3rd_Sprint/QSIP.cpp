@@ -55,7 +55,7 @@ inline It GetBorder(It left, It right, typename std::iterator_traits<It>::value_
     bool right_less_pivot = false;
     bool left_eq_pivot = false;
     bool right_eq_pivot = false;
-
+    --right;
     //auto start = left;
     //auto end = right;
 
@@ -87,9 +87,9 @@ void QuickSortInPlace(It first, It last, Comparator comparator){
         //typename std::iterator_traits<It>::value_type pivot = *(first + std::rand() % (last - first));
         typename std::iterator_traits<It>::value_type pivot = (*first + *(last - 1) + *(first + (last - first) / 2) ) / 3;
         It left = first;
-        It right = last - 1;
+        It right = last;
         It border_right = GetBorder(left, right, pivot, comparator);
-        It border_left = GetBorder(left, right, pivot - 1, comparator);
+        It border_left = GetBorder(left, border_right, pivot - 1, comparator);
         QuickSortInPlace(first, border_left, comparator);
         QuickSortInPlace(border_right, last, comparator);
     }
@@ -155,12 +155,10 @@ int main(){
     std::random_device rd;
     std::mt19937 g(rd());
 
-    std::vector<int> input_data = GetRandomVector(10000000);
+    std::vector<int> input_data = GetRandomVector(120000000);
     std::shuffle(input_data.begin(), input_data.end(), g);
     std::vector<int> input_data1 = input_data;
-    //std::vector<int> input_data = {5,4,2,7,9};
-    //std::string input_data = "xfdkjbhzdilkfhjlzidkjh`vli`osualjdqIUEOKWFHJGAEH984UTHAGEIZNUNBJNNVJKZNJdzkjhnlkdfjxlghkfglmnb"s;
-    //std::sort(input_data.begin(), input_data.end(), std::less<int>());
+
     {
         LOG_DURATION_STREAM("Mine", std::cout);
         QuickSortInPlace(input_data.begin(), input_data.end(), std::less<int>());

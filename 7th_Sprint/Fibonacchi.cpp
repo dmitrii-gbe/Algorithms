@@ -1,11 +1,9 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
-
-int Fibbonnacchi(int n){
-
-    if (n < 2){
+int Fibbonnacchi(int n) {
+    if (n < 2) {
         return 1;
     }
 
@@ -14,7 +12,7 @@ int Fibbonnacchi(int n){
     int first = 1;
     int second = 1;
 
-    while (n - 1 > 0){
+    while (n - 1 > 0) {
         int buf = second;
         second = (first + second) % base;
         first = buf;
@@ -24,8 +22,7 @@ int Fibbonnacchi(int n){
     return second;
 }
 
-int main(){
-
+int main() {
     int n = 0;
 
     std::cin >> n;

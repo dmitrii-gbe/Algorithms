@@ -7,10 +7,10 @@
             "args": [
                 "-fcolor-diagnostics",
                 "-fansi-escape-codes",
-                "-O3",
+                "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/Binaries/${fileBasenameNoExtension}",
+                "${workspaceFolder}/Binaries/${fileBasenameNoExtension}",
                 "-std=gnu++2b",
                 "-Werror",
                 "-Wextra",

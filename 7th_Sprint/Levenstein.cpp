@@ -37,9 +37,10 @@
 Временная сложность работы алгоритма - О(MN), где M и N - длины первой и второй строк.
 
 -- Пространственная сложность --
-В текущей реализации алгоритм требует О(M + N), где M и N - длины строк.
+В текущей реализации алгоритм требует О(M + N), где M и N - длины строк. одной из двух строк.
 */
 #include <iostream>
+#include <numeric>
 #include <vector>
 
 std::string GetString() {
@@ -48,37 +49,16 @@ std::string GetString() {
     return result;
 }
 
-void AssignValues(const std::vector<int>& active, const std::vector<int>& buffer, int& top, int& left,
-                  int& diag, size_t i, size_t j) {
-    if (j - 1 == 0 && i - 1 == 0) {
-        left = i;
-        top = j;
-        diag = 0;
-    } else if (i - 1 == 0 && j - 1 != 0) {
-        left = active[j - 1];
-        top = j;
-        diag = j - 1;
-    } else if (i - 1 != 0 && j - 1 == 0) {
-        left = i;
-        top = buffer[j];
-        diag = i - 1;
-    } else if (i - 1 != 0 && j - 1 != 0) {
-        left = active[j - 1];
-        top = buffer[j];
-        diag = buffer[j - 1];
-    }
-}
-
 int CalculateDistance(const std::string& s1, const std::string& s2) {
     std::vector<int> active(s2.size() + 1);
     std::vector<int> buffer(s2.size() + 1);
+    std::iota(buffer.begin(), buffer.end(), 0);
     for (size_t i = 1; i < s1.size() + 1; ++i) {
+        active[0] = i;
         for (size_t j = 1; j < s2.size() + 1; ++j) {
-            int left = 0;
-            int top = 0;
-            int diag = 0;
-
-            AssignValues(active, buffer, top, left, diag, i, j);
+            int left = active[j - 1];
+            int top = buffer[j];
+            int diag = buffer[j - 1];
 
             if (s1[i - 1] == s2[j - 1]) {
                 active[j] = diag;

@@ -39,8 +39,9 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
+      //"externalConsole": true,
       "cwd": "/Users/dmitrii/Documents/cpp-experiments/Algorhitms",
-      "program": "/Users/dmitrii/Documents/cpp-experiments/Algorhitms/build/Debug/outDebug"
+      "program": "${fileDirname}/${fileBasenameNoExtension}"
     }
   ]
 }

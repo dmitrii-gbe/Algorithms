@@ -1,0 +1,55 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/dmitrii/Documents/cpp-experiments/Algorhitms/3rd_Sprint/Binaries",
+      "program": "${workspaceFolder}/Binaries/${fileBasenameNoExtension}",
+      "preLaunchTask": "C/C++: clang сборка активного файла"
+    }//,
+    // {
+    //   "name": "(lldb) Запустить и отладить",
+    //   "type": "cppdbg",
+    //   "request": "launch",
+    //   "program": "${fileDirname}/Binaries/${fileBasenameNoExtension}",
+    //   "args": [],
+    //   "stopAtEntry": false,
+    //   "cwd": "${fileDirname}",
+    //   "environment": [],
+    //   "externalConsole": true,
+    //   "MIMode": "lldb",
+    //   "preLaunchTask": "C/C++: clang сборка активного файла"
+    // },
+    // {
+    //   "name": "(gdb) Запустить и отладить",
+    //   "type": "cppdbg",
+    //   "request": "launch",
+    //   "args": [],
+    //   "stopAtEntry": false,
+    //   "externalConsole": false,
+    //   "cwd": "${fileDirname}",
+    //   "program": "${workspaceFolder}/${fileBasenameNoExtension}",
+    //   "MIMode": "gdb",
+    //   "miDebuggerPath": "gdb",
+    //   "preLaunchTask": "C/C++: g++ сборка активного файла",
+    //   "setupCommands": [
+    //     {
+    //       "description": "Enable pretty-printing for gdb",
+    //       "text": "-enable-pretty-printing",
+    //       "ignoreFailures": true
+    //     }
+    //   ]
+    // },
+    // {
+    //   "name": "C/C++ Runner: Debug Session",
+    //   "type": "lldb",
+    //   "request": "launch",
+    //   "args": [],
+    //   "cwd": "/Users/dmitrii/Documents/cpp-experiments/Algorhitms",
+    //   "program": "/Users/dmitrii/Documents/cpp-experiments/Algorhitms/build/Debug/outDebug"
+    // }
+  ]
+}

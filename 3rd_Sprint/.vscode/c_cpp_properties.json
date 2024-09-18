@@ -6,7 +6,7 @@
         "${workspaceFolder}/**"
       ],
       "cStandard": "c17",
-      "cppStandard": "gnu++23",
+      "cppStandard": "gnu++2b",
       "intelliSenseMode": "macos-gcc-x64",
       "compilerArgs": [
         ""

@@ -131,6 +131,11 @@
     "format": "cpp",
     "stop_token": "cpp",
     "cinttypes": "cpp",
-    "execution": "cpp"
+    "execution": "cpp",
+    "__tree": "cpp",
+    "deque": "cpp",
+    "map": "cpp",
+    "set": "cpp",
+    "unordered_set": "cpp"
   }
 }

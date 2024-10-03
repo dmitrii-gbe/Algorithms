@@ -5,7 +5,6 @@
 template <typename T>
 std::ostream &operator<<(std::ostream &out, const std::vector<T> v) {
   bool is_first = true;
-  out << "[ ";
   for (const auto &item : v) {
     if (is_first) {
       out << item;
@@ -14,7 +13,6 @@ std::ostream &operator<<(std::ostream &out, const std::vector<T> v) {
       out << " " << item;
     }
   }
-  out << " ]" << '\n';
   return out;
 }
 

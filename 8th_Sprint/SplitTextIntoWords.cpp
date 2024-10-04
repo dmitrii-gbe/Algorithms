@@ -51,6 +51,7 @@ O(NM), где N - сумма длин слов, а M - длина строки. 
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 
 struct Interval {
     int start = 0;
@@ -58,26 +59,23 @@ struct Interval {
 };
 
 struct Node {
-    std::unordered_map<char, Node *> nodes;
+    std::unordered_map<char, Node> nodes;
     bool is_terminal = false;
 };
 
-void AddStringToPrefixTree(std::string_view word, Node *prefix_tree) {
-    Node *node = prefix_tree;
-    for (auto c : word) {
-        if (!node->nodes.count(c)) {
-            node->nodes[c] = new Node();
-        }
-        node = node->nodes[c];
+void AddStringToPrefixTree(std::string_view word, Node& prefix_tree) {
+    Node* node = &prefix_tree;
+    for (char c : word) {
+        node = &node->nodes[c];
     }
     node->is_terminal = true;
 }
 
-Node *BuildPrefixTree() {
+Node BuildPrefixTree() {
     int count = 0;
     std::cin >> count;
     std::string s;
-    Node *prefix_tree = new Node();
+    Node prefix_tree;
     while (count != 0) {
         std::cin >> s;
         --count;
@@ -86,37 +84,40 @@ Node *BuildPrefixTree() {
     return prefix_tree;
 }
 
-bool IsPossibleToSplit(const std::string &text, Node *root) {
-    Node *node = root;
+bool IsPossibleToSplit(const std::string& text, Node& root) {
+    Node* node = &root;
     std::queue<size_t> start_points;
     start_points.push(0);
     size_t index = 0;
     bool match = true;
-    while (!start_points.empty()) {
+    std::unordered_set<size_t> positions;
+    while (!start_points.empty() && index < text.size()) {
         index = start_points.front();
         start_points.pop();
         while (!node->nodes.empty() && index < text.size()) {
-            if (node->is_terminal && root->nodes.count(text[index])) {
+            if (node->is_terminal && root.nodes.count(text[index]) && positions.count(index) == 0) {
                 start_points.push(index);
+                positions.insert(index);
             }
 
             if (node->nodes.count(text[index])) {
                 match = true;
                 // std::cout << text[index] << std::endl;
-                node = node->nodes[text[index++]];
+                node = &node->nodes[text[index++]];
             } else {
                 match = false;
                 break;
             }
         }
 
-        if (node->is_terminal) {
+        if (node->is_terminal && positions.count(index) == 0) {
             start_points.push(index);
-        } else if (node != root) {
+            positions.insert(index);
+        } else if (node != &root) {
             match = false;
         }
 
-        node = root;
+        node = &root;
     }
 
     return index == text.size() && match;
@@ -125,7 +126,7 @@ bool IsPossibleToSplit(const std::string &text, Node *root) {
 int main() {
     std::string text;
     std::cin >> text;
-    Node *prefix_tree = BuildPrefixTree();
+    Node prefix_tree = BuildPrefixTree();
     std::cout << (IsPossibleToSplit(text, prefix_tree) ? "YES" : "NO");
     return 0;
 }

@@ -1,3 +1,4 @@
+
 // https :  // contest.yandex.ru/contest/26133/run-report/119501160/
 /*
 -- ПРИНЦИП РАБОТЫ -
@@ -47,10 +48,11 @@ O(NM), где N - сумма длин слов, а M - длина строки. 
 */
 
 #include <iostream>
-#include <set>
+#include <queue>
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 
 struct Interval {
     int start = 0;
@@ -85,15 +87,17 @@ Node BuildPrefixTree() {
 
 bool IsPossibleToSplit(const std::string& text, Node& root) {
     Node* node = &root;
+    std::queue<size_t> start_points;
+    start_points.push(0);
     size_t index = 0;
     bool match = true;
-    std::set<size_t> positions;
-    positions.insert(index);
-    while (!positions.empty() && index < text.size()) {
-        index = *positions.begin();
-        positions.erase(positions.begin());
+    std::unordered_set<size_t> positions;
+    while (!start_points.empty() && index < text.size()) {
+        index = start_points.front();
+        start_points.pop();
         while (!node->nodes.empty() && index < text.size()) {
-            if (node->is_terminal) {
+            if (node->is_terminal && root.nodes.count(text[index]) && positions.count(index) == 0) {
+                start_points.push(index);
                 positions.insert(index);
             }
 
@@ -107,7 +111,8 @@ bool IsPossibleToSplit(const std::string& text, Node& root) {
             }
         }
 
-        if (node->is_terminal) {
+        if (node->is_terminal && positions.count(index) == 0) {
+            start_points.push(index);
             positions.insert(index);
         } else if (node != &root) {
             match = false;

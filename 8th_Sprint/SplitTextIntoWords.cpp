@@ -99,7 +99,6 @@ bool IsPossibleToSplit(const std::string& text, Node& root) {
 
             if (node->nodes.count(text[index])) {
                 match = true;
-                // std::cout << text[index] << std::endl;
                 node = &node->nodes[text[index++]];
             } else {
                 match = false;
